@@ -16,7 +16,6 @@ import React, { Component } from 'react';
     }
 
     amount = (event) => {
-        let num = this.props.transactions.length
         this.setState({
             amount: parseInt(event.target.value),
             
@@ -34,14 +33,12 @@ import React, { Component } from 'react';
     }
     insertDeposit = () =>{
     this.props.newTransaction(this.state)
-    console.log(this.state)
     }
     
     insertWithdraw = () => {
         let transaction = {...this.state}
         transaction.amount = -1 * transaction.amount
         this.props.newTransaction(transaction)
-        console.log(this.state)
 }
   
         render(){

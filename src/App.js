@@ -22,7 +22,7 @@ class App extends Component {
     t.splice(idTransaction, 1)
     this.setState({
       transaction: t
-    })
+    }, () => this.calculateSum(this.state.transaction))
     axios.delete(`http://localhost:4000/transaction/${id}`).then((response) => {
       console.log(response)
     })
@@ -41,9 +41,6 @@ class App extends Component {
  
   getTransactions = () => {
     axios.get('http://localhost:4000/transactions').then((response) => { 
-      this.setState({
-        transaction: response.data
-      }, () => this.calculateSum(this.state.transaction))
     })
   }
   componentDidMount() {
