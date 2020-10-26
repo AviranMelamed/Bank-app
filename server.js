@@ -18,14 +18,13 @@ app.use(function (req, res, next) {
 
 app.get(`/transactions`, function(req, res) {
     TransactionScheme.find().exec(function(err, Transactions) {
-        console.log(Transactions)
         res.send(Transactions)
     })
     
 })
 app.post(`/transaction`, function(req, res) {
-        const getExpense = req.body
-        const newT = TransactionScheme(getExpense)
+        const postNewTransaction = req.body
+        const newT = TransactionScheme(postNewTransaction)
         newT.save()
         res.send(newT)     
 
@@ -33,7 +32,6 @@ app.post(`/transaction`, function(req, res) {
 
 app.delete(`/transaction/:id`, async function(req, res) {
     const id = req.params.id
-    console.log(id)
     await TransactionScheme.findByIdAndDelete({_id: id})
     res.send(id)
 })

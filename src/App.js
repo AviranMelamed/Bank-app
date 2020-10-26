@@ -16,10 +16,9 @@ class App extends Component {
   }
 
   removeTransaction = (id) => {
-    let idTransaction = this.state.transaction.findIndex(t => t._id === id)
-    console.log(idTransaction)
+    const indexTransaction = this.state.transaction.findIndex(t => t._id === id)
     let t = [...this.state.transaction]
-    t.splice(idTransaction, 1)
+    t.splice(indexTransaction, 1)
     this.setState({
       transaction: t
     }, () => this.calculateSum(this.state.transaction))
@@ -29,7 +28,7 @@ class App extends Component {
   }
 
   newTransaction = (a) => {
-    let transactions = [...this.state.transaction]
+    const transactions = [...this.state.transaction]
     transactions.push(a)
     this.setState({
       transaction: transactions
@@ -38,32 +37,41 @@ class App extends Component {
       console.log(response)
     }, () => this.getTransactions())
   }
- 
-  getTransactions = () => {
-    axios.get('http://localhost:4000/transactions').then((response) => { 
-    })
-  }
-  componentDidMount() {
-    this.getTransactions()
+  getTransactions = () => axios.get('http://localhost:4000/transactions')
+
+  componentDidMount = async () => {
+    const transactions = await this.getTransactions()
+    this.setState({ transaction: transactions.data })
 
   }
 
-  calculateSum = (trans) => {
+  calculateSum = () => {
+
     let sum = 0
-    for (let t of trans) {
-      sum += t.amount
-    }
-    this.setState({
-      Balance: sum
-    })
+    this.state.transaction.forEach(t => sum += t.amount)
+    return sum
+  }
+  calculateCategory = (category) => {
+    let sum = 0 
+    let filter = this.state.transaction.filter(t => t.category === category)
+    filter.forEach(a => sum += a.amount)
+    return(sum)
+    
   }
 
   render() {
     return (
       <div>
-        <div><Transactions removeTransaction={this.removeTransaction} transaction={this.state.transaction} /></div>
         <div><Operations newTransaction={this.newTransaction} transactions={this.state.transaction} /></div>
-        <div>Balance :{this.state.Balance}</div>
+        <div><Transactions removeTransaction={this.removeTransaction} transaction={this.state.transaction} /></div>
+        
+          <h4>Total Balance :{this.calculateSum()}</h4>
+       
+          <h3>Total sum of categories:</h3>
+          <div>Clothes: {this.calculateCategory("Clothes")}</div>
+          <div>Car: {this.calculateCategory("Car")}</div>
+          <div>Supermarket: {this.calculateCategory("Supermarket")}</div>
+          <div>Clubs: {this.calculateCategory("Clubs")}</div>
       </div >
     );
   }
